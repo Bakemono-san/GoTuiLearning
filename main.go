@@ -54,6 +54,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.cursor < (len(m.Tasks) - 1) {
 					m.cursor++
 				}
+			case "ctrl+d":
+				m.Tasks = append(m.Tasks[:m.cursor], m.Tasks[m.cursor+1:]...)
+				if m.cursor > len(m.Tasks)-1 {
+					m.cursor = len(m.Tasks) - 1
+				}
 			case "enter", " ":
 				if _, ok := m.SelectedTask[m.cursor]; ok {
 					delete(m.SelectedTask, m.cursor)
@@ -127,12 +132,12 @@ func (m model) View() string {
 			titleStyle.Render("Which task would you like to add?"),
 			m.TextInput.View(),
 		))
-		b.WriteString("\n" + helpStyle.Render("\n• ctrl+a: add task • ctrl+x: clear input") + "\n")
+		b.WriteString("\n" + helpStyle.Render("\n• [ctrl + a]: add task • [ctrl + x]: clear input") + "\n")
 	} else {
-		b.WriteString("\n" + titleStyle.Render("Type ctrl+c or q to quit.") + "\n")
+		b.WriteString("\n" + titleStyle.Render("Type [ctrl + c] or q to quit.") + "\n")
 	}
 
-	b.WriteString("\n" + helpStyle.Render("Commands: ↑/↓: navigate • space: toggle \n") + "\n")
+	b.WriteString("\n" + helpStyle.Render("Commands: ↑/↓: navigate • space: toggle • [crtl + d]: delete \n") + "\n")
 
 	return b.String()
 }
