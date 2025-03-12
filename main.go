@@ -122,11 +122,12 @@ func (m model) View() string {
 			titleStyle.Render("Which task would you like to add?"),
 			m.TextInput.View(),
 		))
+		b.WriteString("\n" + helpStyle.Render("\n• ctrl+a: add task • ctrl+x: clear input") + "\n")
 	} else {
 		b.WriteString("\n" + titleStyle.Render("Type ctrl+c or q to quit.") + "\n")
 	}
 
-	b.WriteString("\n" + helpStyle.Render("Commands: ↑/↓: navigate • space: toggle \n• ctrl+a: add task • ctrl+x: clear input") + "\n")
+	b.WriteString("\n" + helpStyle.Render("Commands: ↑/↓: navigate • space: toggle \n") + "\n")
 
 	return b.String()
 }
