@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -30,7 +32,7 @@ func initModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return tea.SetWindowTitle("Task manager Tui")
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -73,7 +75,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Which task have you done today?\n"
+	var b strings.Builder
+
+	titleStyle := lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Padding(0, 1).
+		Margin(1, 0).
+		Foreground(lipgloss.Color("205"))
+
+	taskStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("69")).
+		Padding(0, 1)
+
+	selectedTaskStyle := taskStyle.Copy().
+		Foreground(lipgloss.Color("201"))
+
+	b.WriteString(titleStyle.Render("Which task have you done today?") + "\n\n")
 
 	for i, task := range m.Tasks {
 		cursor := " "
@@ -86,16 +104,25 @@ func (m model) View() string {
 			checked = "x"
 		}
 
-		s += fmt.Sprintf("%s [%s] %s \n", cursor, checked, task)
+		taskLine := fmt.Sprintf("%s [%s] %s", cursor, checked, task)
+		if _, ok := m.SelectedTask[i]; ok {
+			b.WriteString(selectedTaskStyle.Render(taskLine) + "\n")
+		} else {
+			b.WriteString(taskStyle.Render(taskLine) + "\n")
+		}
 	}
 
 	if m.TextInput.Value() != "" {
-		return fmt.Sprintf(
-			"Which task would you like to add?\nctrl + a to save the task and ctrl + x to cancel\n%s\n", m.TextInput.View())
+		b.WriteString(fmt.Sprintf(
+			"\n%s\n%s\n",
+			titleStyle.Render("Which task would you like to add?"),
+			m.TextInput.View(),
+		))
+	} else {
+		b.WriteString("\n" + titleStyle.Render("Type ctrl+c or q to quit.") + "\n")
 	}
 
-	s += "Type ctrl+c or q to quit. \n"
-	return s
+	return b.String()
 }
 
 func main() {
