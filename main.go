@@ -91,6 +91,10 @@ func (m model) View() string {
 	selectedTaskStyle := taskStyle.Copy().
 		Foreground(lipgloss.Color("201"))
 
+	helpStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("241")).
+		Padding(0, 1)
+
 	b.WriteString(titleStyle.Render("Which task have you done today?") + "\n\n")
 
 	for i, task := range m.Tasks {
@@ -121,6 +125,8 @@ func (m model) View() string {
 	} else {
 		b.WriteString("\n" + titleStyle.Render("Type ctrl+c or q to quit.") + "\n")
 	}
+
+	b.WriteString("\n" + helpStyle.Render("Commands: ↑/↓: navigate • space: toggle \n• ctrl+a: add task • ctrl+x: clear input") + "\n")
 
 	return b.String()
 }
