@@ -77,6 +77,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	var b strings.Builder
 
+	vert := lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).Background(lipgloss.Color("#04B575")).Padding(0, 1)
+	jaune := lipgloss.NewStyle().Foreground(lipgloss.Color("#000000")).Background(lipgloss.Color("#ffff00")).Padding(0, 1).Align(lipgloss.Center)
+	rouge := lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).Background(lipgloss.Color("#e9383f")).Padding(0, 1)
+
 	titleStyle := lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("63")).
@@ -95,6 +99,7 @@ func (m model) View() string {
 		Foreground(lipgloss.Color("241")).
 		Padding(0, 1)
 
+	b.WriteString("\n" + vert.Render(" ") + jaune.Render("*") + rouge.Render(" ") + "\n")
 	b.WriteString(titleStyle.Render("Which task have you done today?") + "\n\n")
 
 	for i, task := range m.Tasks {
